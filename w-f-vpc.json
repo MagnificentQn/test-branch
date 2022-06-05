@@ -1,0 +1,135 @@
+{
+"AWSTemplateFormatVersion": "2010-09-09",
+    "Description": "this is to create a vpc and two subnet",
+    "Metadata": {
+
+    },
+    "Parameters": {
+    
+    },
+    "Mappings": {
+
+    },
+    "Conditions": {
+
+    },
+    "Resources": {
+    "myfirstiacvpc": {
+      "Type": "AWS::EC2::VPC",
+      "Properties": {
+        "CidrBlock": "10.0.0.0/16",
+        "Tags":[
+        { "Key": "Name", "Value":  "vpc1" }
+        ]
+      }
+        },
+        
+        "publicsub": {
+          "Type": "AWS::EC2::Subnet",
+          "Properties": {
+            "AvailabilityZone": "us-east-1a",
+            "VpcId": 
+            { "Ref": "myfirstiacvpc" }
+            ,
+            "CidrBlock": "10.0.0.0/24",
+            "Tags":[
+            { "Key": "Name", "Value":  "publicsubnet" }
+            ]
+          }
+        },
+        
+        "privatesub": {
+          "Type": "AWS::EC2::Subnet",
+          "Properties": {
+            "AvailabilityZone": "us-east-1b",
+            "VpcId":
+            { "Ref": "myfirstiacvpc" }
+                , 
+            "CidrBlock": "10.0.3.3/24",
+            "Tags":[
+            { "Key": "Name", "Value":  "Privatesub" }
+            ]
+          }
+        },
+        
+        "routeTablepub": {
+          "Type": "AWS::EC2::RouteTable",
+          "Properties": {
+            "VpcId": 
+            { "Ref": "myfirstiacvpc" }
+            ,
+            "Tags":[
+            { "Key": "Name", "Value":  "pubrtable" }
+            ]
+          }
+        },
+        
+        "routeTableprivate": {
+          "Type": "AWS::EC2::RouteTable",
+          "Properties": {
+            "VpcId": 
+            { "Ref": "myfirstiacvpc" }
+            ,
+            "Tags":[
+            { "Key": "Name", "Value":  "trprivste" }
+            ]
+          }
+        },
+           
+        "routeTableAssocpub": {
+          "Type": "AWS::EC2::SubnetRouteTableAssociation",
+          "Properties": {
+            "SubnetId": 
+            { "Ref": "publicsub" }
+            ,
+            "RouteTableId": 
+            { "Ref": "routeTablepub" }
+            
+          }
+        },
+        
+        "routteout": {
+          "Type": "AWS::EC2::Route",
+          "Properties": {
+            "RouteTableId": 
+            { "Ref": "routeTablepub" }
+            ,
+            "DestinationCidrBlock": "0.0.0.0/0",
+            "GatewayId": 
+            { "Ref": "firstiagintgw" }
+                        
+          }
+        },
+        
+        "firstiagintgw": {
+          "Type": "AWS::EC2::InternetGateway",
+          "Properties": {
+            "Tags":[
+            { "Key": "Name", "Value":  "internetgateway" }
+            ]
+          }
+        },
+        "AttachGateway": {
+          "Type": "AWS::EC2::VPCGatewayAttachment",
+          "Properties": {
+            "VpcId": 
+            { "Ref": "myfirstiacvpc" }
+             ,
+            "InternetGatewayId": { "Ref": "firstiagintgw" }
+          }
+        }
+        
+        
+        
+
+        
+        
+    
+
+    
+
+    },
+    "Outputs": {
+
+    }
+}
